@@ -76,6 +76,10 @@ export default class DungeonScene extends Phaser.Scene {
       this.scene.stop("InfoScene");
       this.scene.start("ReferenceScene");
     });
+    this.input.keyboard.on("keydown_J",()=>{
+      this.scene.stop("InfoScene");
+      this.scene.start("JoyStickTestScene");
+    });
 
     this.scene.run("InfoScene");
   }
