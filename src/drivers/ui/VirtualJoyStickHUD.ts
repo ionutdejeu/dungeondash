@@ -4,47 +4,56 @@ import Phaser from "phaser";
 
 export default class VirtualJoyStickHUD extends Phaser.GameObjects.Container {
      
-    zero:Phaser.Geom.Point;
+	zero:Phaser.Geom.Point;
+	direction:Phaser.Geom.Point;
+	distance:Number;
+	pinAngle:number;
+	isBeingDragged:boolean;
+	dragger:Phaser.GameObjects.Sprite;
 	constructor(scene: Phaser.Scene, 
 			x: number, 
 			y: number, 
-			base:Phaser.GameObjects.GameObject,
-			thumb:Phaser.GameObjects.GameObject,
+			base:Phaser.GameObjects.Arc,
+			thumb:Phaser.GameObjects.Arc,
 			children?: Phaser.GameObjects.GameObject[]) {
         super(scene, x, y, children);
 		this.zero= new Phaser.Geom.Point(0, 0);
+		base.setOrigin(0.5,0.5);
 		this.add(base);
+		thumb.setOrigin(0.5,0.5);
 		this.add(thumb);
 		scene.add.existing(this);
-		//this.set(0.5, 0.5);
+		
+		
+		
 		// this.active = true;
 		// this.came.setTo(x, y);
 
-		// this.direction      = new Phaser.Point(0, 0);
-		// this.distance       = 0;
-		// this.pinAngle       = 0;
-		// this.disabled       = false;
-		// this.isBeingDragged = false;
-
-		// this.events.onDown = new Phaser.Signal();
-		// this.events.onUp   = new Phaser.Signal();
-		// this.events.onMove = new Phaser.Signal();
+		this.direction      = new Phaser.Geom.Point(0, 0);
+		this.distance       = 0;
+		this.pinAngle       = 0;
+		this.active       = true;
+		this.isBeingDragged = false;
 		
-		// /* Pin indicator - what players think they drag */
-		// this.pin = game.add.sprite(0, 0, pin);
-		// this.pin.anchor.setTo(0.5, 0.5);
-		// this.addChild(this.pin);
-		// /* Invisible sprite that players actually drag */
-		// var dragger = this.dragger = game.add.sprite(0, 0, null);
-		// 	dragger.anchor.setTo(0.5, 0.5);
-		// 	dragger.width = dragger.height = 181;
-		// 	dragger.inputEnabled = true;
-		// 	dragger.input.enableDrag(true);
-		// 	/* Set flags on drag */
-		// 	dragger.events.onDragStart.add(this.onDragStart, this);
-		// 	dragger.events.onDragStop.add(this.onDragStop, this);
-		// this.addChild(dragger);
-    }
+		 
+		/* Invisible sprite that players actually drag */
+		this.dragger = this.scene.add.sprite(0, 0,'');
+		this.dragger.setOrigin(0.5, 0.5);
+		this.dragger.width = this.dragger.height = this.width;
+		this.dragger.input.enabled = true;
+		this.dragger.input.draggable = true
+		//this.dragger.setInteractive(new Phaser.Geom.Circle(0,0,50),this.callback);
+		 
+		//this.scene.input.setDraggable(this.dragger)
+		this.scene.input.on('drag', (pointer: any, gameObject: Phaser.GameObjects.GameObject, dragX: number, dragY: number) => {
+			console.log(gameObject);
+		  })
+		this.add(this.dragger);
+		console.log(this);
+	}
+	callback(){
+		console.log('test');
+	}
     // enable() {
     // 	this.disabled = false;
     // }

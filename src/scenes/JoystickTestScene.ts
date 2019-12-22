@@ -2,10 +2,11 @@ import Phaser from "phaser";
 import VirtualJoyStickHUD from "../drivers/ui/VirtualJoyStickHUD";
 
 export default class JoyStickScene extends Phaser.Scene{
-    joyStick:VirtualJoyStickHUD;
+    joyStick:VirtualJoyStickHUD=null;
     text:any;
     constructor(){
         super({key:'JoyStickTestScene'});
+         
     }
     
     
@@ -20,6 +21,8 @@ export default class JoyStickScene extends Phaser.Scene{
         this.joyStick= new VirtualJoyStickHUD(this,0,0,
             this.add.circle(0, 0, 100, 0x888888),
             this.add.circle(0, 0, 50, 0xcccccc));
+
+        this.joyStick.setPosition(400,400);
 
         this.text = this.add.text(0, 0,'test');
         //this.dumpJoyStickState();

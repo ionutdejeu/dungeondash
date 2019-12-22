@@ -3,6 +3,8 @@ import ReferenceScene from "./scenes/ReferenceScene";
 import DungeonScene from "./scenes/DungeonScene";
 import InfoScene from "./scenes/InfoScene";
 import JoyStickScene from "./scenes/JoystickTestScene";
+import Demo from "./scenes/Demo";
+
 
 const game = new Phaser.Game({
   type: Phaser.WEBGL,
@@ -11,7 +13,7 @@ const game = new Phaser.Game({
   height: window.innerHeight,
   render: { pixelArt: true },
   physics: { default: "arcade", arcade: { debug: false, gravity: { y: 0 } } },
-  scene: [DungeonScene, InfoScene, ReferenceScene,JoyStickScene]
+  scene: [Demo, JoyStickScene,DungeonScene, InfoScene, ReferenceScene,]
 });
 
 function setUpHotReload() {
