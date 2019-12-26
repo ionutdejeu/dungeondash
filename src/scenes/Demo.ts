@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-
+import * as Plugin from '../plugins/rexvirtualjoystickplugin.min';
 export default class Demo extends Phaser.Scene {
     joyStick:any;
     text:any;
@@ -12,7 +12,7 @@ export default class Demo extends Phaser.Scene {
     preload() {
         var url;
         url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/plugins/dist/rexvirtualjoystickplugin.min.js';
-        this.load.plugin('rexvirtualjoystickplugin', url, true);
+        this.load.plugin('rexvirtualjoystickplugin', Plugin, true);
     }
 
     create() {
@@ -20,8 +20,8 @@ export default class Demo extends Phaser.Scene {
                 x: 400,
                 y: 300,
                 radius: 100,
-                base: this.add.circle(0, 0, 100, 0x888888),
-                thumb: this.add.circle(0, 0, 50, 0xcccccc),
+                base: this.add.circle(0, 0, 10, 0x888888),
+                thumb: this.add.circle(0, 0, 5, 0xcccccc),
                 // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
                 // forceMin: 16,
                 // enable: true

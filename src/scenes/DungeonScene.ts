@@ -4,6 +4,12 @@ import FOVLayer from "../entities/FOVLayer";
 import Player from "../entities/Player";
 import Map from "../entities/Map";
 
+import transparentLight01 from "../../assets/ui/transparentLight/transparentLight01.png";
+import transparentLight03 from "../../assets/ui/transparentLight/transparentLight03.png";
+import transparentLight04 from "../../assets/ui/transparentLight/transparentLight04.png";
+import transparentLight08 from "../../assets/ui/transparentLight/transparentLight08.png";
+import JoyStickScene, { VirtualJoystickKeys } from "./JoyStickScene";
+
 const worldTileHeight = 81;
 const worldTileWidth = 81;
 
@@ -14,7 +20,10 @@ export default class DungeonScene extends Phaser.Scene {
   fov: FOVLayer | null;
   tilemap: Phaser.Tilemaps.Tilemap | null;
   cameraResizeNeeded: boolean;
-
+  text:any|null;
+  clickCountText:any|null;
+  joyStickCursorKeys:VirtualJoystickKeys;
+  joyStickScene:JoyStickScene;
   preload(): void {
     this.load.image(Graphics.environment.name, Graphics.environment.file);
     this.load.image(Graphics.util.name, Graphics.util.file);
@@ -22,7 +31,13 @@ export default class DungeonScene extends Phaser.Scene {
       frameHeight: Graphics.player.height,
       frameWidth: Graphics.player.width
     });
+    this.load.image('up_joystickpad',transparentLight01);
+    this.load.image('left_joystickpad',transparentLight03);
+    this.load.image('right_joystickpad',transparentLight04);
+    this.load.image('down_joystickpad',transparentLight08);
   }
+
+
 
   constructor() {
     super("DungeonScene");
@@ -68,6 +83,39 @@ export default class DungeonScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player.sprite);
 
     this.physics.add.collider(this.player.sprite, map.wallLayer);
+    let clickCount = 0;
+    this.clickCountText = this.add.text(100, 200, '');
+    let container = this.add.container(0,0);
+    container.setScrollFactor(0,0);
+     
+    const upPadButton = this.add.image(-40,-76,'up_joystickpad')
+    .setInteractive()
+    .on('pointerdown', () => this.updateClickCountText(++clickCount) )
+    .on('pointerover', (e:any) => {console.log(e)} )
+    .on('pointerout', (e:any) => {console.log(e)} );
+    
+    const leftPadButton = this.add.image(-80,-30,'left_joystickpad')
+    .setInteractive()
+    .on('pointerdown', () => this.updateClickCountText(++clickCount) )
+    .on('pointerover', (e:any) => {console.log(e)} )
+    .on('pointerout', (e:any) => {console.log(e)} );
+    
+    const rightPadButton = this.add.image(0,-30,'right_joystickpad')
+    .setInteractive()
+    .on('pointerdown', () => this.updateClickCountText(++clickCount) )
+    .on('pointerover', (e:any) => {console.log(e)} )
+    .on('pointerout', (e:any) => {console.log(e)} );
+
+    const downPadButton = this.add.image(-40,14,'down_joystickpad')
+    .setInteractive()
+    .on('pointerdown', () => this.updateClickCountText(++clickCount) )
+    .on('pointerover', (e:any) => {console.log(e)} )
+    .on('pointerout', (e:any) => {console.log(e)} );
+
+    container.add([upPadButton,downPadButton,leftPadButton,rightPadButton]);
+
+    
+
     window.addEventListener("resize", () => {
       this.cameraResizeNeeded = true;
     });
@@ -82,10 +130,15 @@ export default class DungeonScene extends Phaser.Scene {
     });
 
     this.scene.run("InfoScene");
+    this.scene.run("JoyStickTestScene");
+    this.joyStickScene= this.scene.manager.getScene('JoyStickTestScene') as JoyStickScene;
+    
+
   }
 
   update(time: number, delta: number) {
-    this.player!.update(time);
+    this.joyStickCursorKeys = this.joyStickScene.getCursorKeys();
+    this.player!.update(time,this.joyStickCursorKeys);
     const camera = this.cameras.main;
 
     if (this.cameraResizeNeeded) {
@@ -108,5 +161,9 @@ export default class DungeonScene extends Phaser.Scene {
     );
 
     this.fov!.update(player, bounds, delta);
+  }
+
+  updateClickCountText(clickCount:any) {
+    this.clickCountText.setText(`Button has been clicked ${clickCount} times.`);
   }
 }

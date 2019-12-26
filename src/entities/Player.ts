@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import Graphics from "../assets/Graphics";
+import { VirtualJoystickKeys } from "../scenes/JoyStickScene";
 
 const speed = 125;
 const attackSpeed = 500;
@@ -64,7 +65,7 @@ export default class Player {
     this.body = <Phaser.Physics.Arcade.Body>this.sprite.body;
   }
 
-  update(time: number) {
+  update(time: number,virtualKeys:VirtualJoystickKeys) {
     const keys = this.keys;
     let attackAnim = "";
     let moveAnim = "";
@@ -74,10 +75,10 @@ export default class Player {
     }
     this.body.setVelocity(0);
 
-    const left = keys.left.isDown || keys.a.isDown;
-    const right = keys.right.isDown || keys.d.isDown;
-    const up = keys.up.isDown || keys.w.isDown;
-    const down = keys.down.isDown || keys.s.isDown;
+    const left = keys.left.isDown || keys.a.isDown || virtualKeys.left;
+    const right = keys.right.isDown || keys.d.isDown || virtualKeys.right;
+    const up = keys.up.isDown || keys.w.isDown || virtualKeys.up;
+    const down = keys.down.isDown || keys.s.isDown || virtualKeys.down;
 
     if (!this.body.blocked.left && left) {
       this.body.setVelocityX(-speed);
@@ -107,7 +108,7 @@ export default class Player {
     }
 
     if (
-      keys.space!.isDown &&
+      (keys.space!.isDown || virtualKeys.actionButtonA) &&
       time > this.attackLockedUntil &&
       this.body.velocity.length() > 0
     ) {
