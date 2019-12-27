@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import * as Plugin from '../plugins/rexvirtualjoystickplugin.min';
 export default class Demo extends Phaser.Scene {
     joyStick:any;
     text:any;

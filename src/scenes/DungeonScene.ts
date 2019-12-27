@@ -9,6 +9,7 @@ import transparentLight03 from "../../assets/ui/transparentLight/transparentLigh
 import transparentLight04 from "../../assets/ui/transparentLight/transparentLight04.png";
 import transparentLight08 from "../../assets/ui/transparentLight/transparentLight08.png";
 import JoyStickScene, { VirtualJoystickKeys } from "./JoyStickScene";
+import ArcadePickupObject from "../entities/ArcadePickupObject";
 
 const worldTileHeight = 81;
 const worldTileWidth = 81;
@@ -26,19 +27,22 @@ export default class DungeonScene extends Phaser.Scene {
   joyStickScene:JoyStickScene;
   preload(): void {
     this.load.image(Graphics.environment.name, Graphics.environment.file);
+    
     this.load.image(Graphics.util.name, Graphics.util.file);
     this.load.spritesheet(Graphics.player.name, Graphics.player.file, {
       frameHeight: Graphics.player.height,
       frameWidth: Graphics.player.width
+    });
+    this.load.spritesheet(Graphics.items.name, Graphics.items.file,{
+      frameWidth:Graphics.items.width,
+      frameHeight:Graphics.items.height
     });
     this.load.image('up_joystickpad',transparentLight01);
     this.load.image('left_joystickpad',transparentLight03);
     this.load.image('right_joystickpad',transparentLight04);
     this.load.image('down_joystickpad',transparentLight08);
   }
-
-
-
+  
   constructor() {
     super("DungeonScene");
     this.lastX = -1;
@@ -83,37 +87,6 @@ export default class DungeonScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player.sprite);
 
     this.physics.add.collider(this.player.sprite, map.wallLayer);
-    let clickCount = 0;
-    this.clickCountText = this.add.text(100, 200, '');
-    let container = this.add.container(0,0);
-    container.setScrollFactor(0,0);
-     
-    const upPadButton = this.add.image(-40,-76,'up_joystickpad')
-    .setInteractive()
-    .on('pointerdown', () => this.updateClickCountText(++clickCount) )
-    .on('pointerover', (e:any) => {console.log(e)} )
-    .on('pointerout', (e:any) => {console.log(e)} );
-    
-    const leftPadButton = this.add.image(-80,-30,'left_joystickpad')
-    .setInteractive()
-    .on('pointerdown', () => this.updateClickCountText(++clickCount) )
-    .on('pointerover', (e:any) => {console.log(e)} )
-    .on('pointerout', (e:any) => {console.log(e)} );
-    
-    const rightPadButton = this.add.image(0,-30,'right_joystickpad')
-    .setInteractive()
-    .on('pointerdown', () => this.updateClickCountText(++clickCount) )
-    .on('pointerover', (e:any) => {console.log(e)} )
-    .on('pointerout', (e:any) => {console.log(e)} );
-
-    const downPadButton = this.add.image(-40,14,'down_joystickpad')
-    .setInteractive()
-    .on('pointerdown', () => this.updateClickCountText(++clickCount) )
-    .on('pointerover', (e:any) => {console.log(e)} )
-    .on('pointerout', (e:any) => {console.log(e)} );
-
-    container.add([upPadButton,downPadButton,leftPadButton,rightPadButton]);
-
     
 
     window.addEventListener("resize", () => {
@@ -133,6 +106,11 @@ export default class DungeonScene extends Phaser.Scene {
     this.scene.run("JoyStickTestScene");
     this.joyStickScene= this.scene.manager.getScene('JoyStickTestScene') as JoyStickScene;
     
+    const item = new ArcadePickupObject(
+      this.tilemap.tileToWorldX(map.startingX),
+      this.tilemap.tileToWorldY(map.startingY),
+      this,
+      this.player.sprite.body.gameObject);
 
   }
 
@@ -161,9 +139,9 @@ export default class DungeonScene extends Phaser.Scene {
     );
 
     this.fov!.update(player, bounds, delta);
+
+    
   }
 
-  updateClickCountText(clickCount:any) {
-    this.clickCountText.setText(`Button has been clicked ${clickCount} times.`);
-  }
+  
 }
